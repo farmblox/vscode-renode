@@ -1,0 +1,28 @@
+{
+  "comments": {
+    "lineComment": "//",
+    "blockComment": ["/*", "*/"]
+  },
+  "brackets": [
+    ["{", "}"],
+    ["[", "]"],
+    ["<", ">"]
+  ],
+  "autoClosingPairs": [
+    { "open": "{", "close": "}" },
+    { "open": "[", "close": "]" },
+    { "open": "<", "close": ">", "notIn": ["string", "comment"] },
+    { "open": "\"", "close": "\"", "notIn": ["string", "comment"] }
+  ],
+  "surroundingPairs": [
+    ["{", "}"],
+    ["[", "]"],
+    ["<", ">"],
+    ["\"", "\""]
+  ],
+  "indentationRules": {
+    "comment": "A declaration line opens an attribute block; the attributes are one 4-space level in.",
+    "increaseIndentPattern": "^[A-Za-z_][A-Za-z0-9_]*\\s*:.*$|^\\s*(?:preinit|init|reset)(?:\\s+add)?\\s*:\\s*$",
+    "decreaseIndentPattern": "^\\s*\\}"
+  }
+}

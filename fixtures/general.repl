@@ -1,0 +1,38 @@
+// FIXTURE — a generic BOARD overlay: it `using`s a SoC and adds only its own wiring, which
+// is how Renode's shipped platforms are organised. Exercises the format features a board
+// file uses that a SoC file does not. Test data; not loaded by any suite.
+
+using "general_soc.repl"
+
+led: Miscellaneous.LED @ sysbus
+
+gpio: GPIOPort.STM32_GPIOPort @ sysbus <0x40010800, +0x400> as "porta"
+    0 -> exti@0
+    1 -> led@0
+
+button: Miscellaneous.Button @ sysbus
+    -> gpio@0
+    invert: true
+
+// Declared but deliberately registered NOWHERE.
+spare: Miscellaneous.LED @ none
+
+// Re-open nodes declared above (here and in the SoC file) to override and to cancel.
+uart0:
+    frequency: 48000000
+
+button:
+    invert: none
+
+mock:
+    series: empty
+
+// Monitor commands bound to the bus lifecycle. `add` appends to an inherited block.
+sysbus:
+    init:
+        Tag <0x40023000, 0x40023400> "RCC"
+    reset add:
+        Clear
+
+// A variable scoped to this file only.
+local ledCount: 1

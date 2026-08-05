@@ -1,0 +1,8 @@
+:name: general_include
+:description: FIXTURE — a script meant to be pulled in by another with `include`, the way
+: Renode's own scripts share bring-up. It creates a name the INCLUDING script then uses,
+: which is what makes cross-file resolution testable.
+
+$shared ?= $ORIGIN/image.bin
+
+emulation CreateLoraMedium "shared_medium"

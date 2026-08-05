@@ -1,0 +1,57 @@
+// FIXTURE — a generic SoC platform description, written to exercise the .repl FORMAT
+// rather than any particular project. Every construct here appears in Renode's own shipped
+// platform descriptions or in the platform-description reference. Test data for
+// check-grammars.mjs / check-hovers.mjs; not loaded by any suite.
+
+/* Block comments are part of the format too. */
+
+// One peripheral, TWO registration points — an architectural base and a boot alias.
+flash: Memory.MappedMemory @ {
+        sysbus 0x08000000;
+        sysbus 0x00000000 }
+    size: 0x40000
+
+sram: Memory.MappedMemory @ sysbus 0x20000000
+    size: 0x10000
+
+nvic: IRQControllers.NVIC @ sysbus 0xE000E000
+    priorityMask: 0xF0
+    systickFrequency: 72000000
+    IRQ -> cpu@0
+
+cpu: CPU.CortexM @ sysbus
+    cpuType: "cortex-m4"
+    nvic: nvic
+
+// A UART: its kernel clock is a property and its interrupt a named GPIO output.
+uart0: UART.STM32_UART @ sysbus <0x40011000, +0x400>
+    frequency: 72000000
+    IRQ -> nvic@37
+
+// Range-to-range wiring, a local index, and two destinations from one source.
+exti: IRQControllers.STM32_EXTI @ sysbus 0x40010400
+    [0-4] -> nvic@[6-10]
+    5 -> nvic@23
+    6 -> nvic#0@40 | cpu@1
+
+// A default output needs no signal name.
+timer: Timers.STM32_Timer @ sysbus <0x40000000, +0x400>
+    frequency: 72000000
+    initialLimit: 0xFFFFFFFF
+    -> nvic@28
+
+// A model whose members live in this fixture set's own C#: a property, a constructor
+// parameter, and a GPIO output.
+example: Fixtures.ExampleModel @ sysbus 0x60000000
+    frequency: 72000000
+    label: "demo"
+    Alarm -> nvic@3
+
+// Value forms: inline object, list, dictionary, multiline string, enum.
+mock: Mocks.MockReceiver @ sysbus 0x50000000
+    subUnit: new Mocks.MockPeripheral { size: 0x100 }
+    names: ["alpha", "beta"]
+    lookup: { "x": 1; "y": 2 }
+    series: SomeEnum.FirstMember
+    label: '''a multiline
+value'''

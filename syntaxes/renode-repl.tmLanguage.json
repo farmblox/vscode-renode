@@ -1,0 +1,186 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Renode platform description",
+  "scopeName": "source.renode-repl",
+  "comment": "Grammar for Renode's platform description format. Follows the reference at https://renode.readthedocs.io/en/latest/advanced/platform_description_format.html rather than only what this repo happens to use, so constructs we do not use yet (init/preinit/reset blocks, `new` inline objects, `as` aliases, `none`/`empty`, list and dictionary values, `#index` local IRQs, `|` multi-destination) still highlight correctly.",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#using" },
+    { "include": "#blocks" },
+    { "include": "#declaration" },
+    { "include": "#connection" },
+    { "include": "#property" },
+    { "include": "#registration" },
+    { "include": "#values" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.renode-repl",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.renode-repl",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "using": {
+      "comment": "`using \"other.repl\"` pulls in a dependency; `using local` limits variable scope.",
+      "match": "^\\s*(using)(\\s+local)?\\b",
+      "captures": {
+        "1": { "name": "keyword.control.import.renode-repl" },
+        "2": { "name": "storage.modifier.renode-repl" }
+      }
+    },
+    "blocks": {
+      "comment": "init / preinit / reset hold MONITOR statements, not repl attributes — `add` appends instead of replacing.",
+      "match": "^\\s*(preinit|init|reset)(\\s+add)?\\s*(:)",
+      "captures": {
+        "1": { "name": "keyword.control.renode-repl" },
+        "2": { "name": "keyword.control.renode-repl" },
+        "3": { "name": "punctuation.separator.key-value.renode-repl" }
+      }
+    },
+    "declaration": {
+      "comment": "A node declaration starts in column 0: `name: Namespace.Type @ parent`. The type is optional — a bare `gpioPortA:` re-opens an already-declared node to add wiring.",
+      "match": "^([A-Za-z_][A-Za-z0-9_]*)\\s*(:)[ \\t]*([A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)+)?",
+      "captures": {
+        "1": { "name": "entity.name.type.renode-repl" },
+        "2": { "name": "punctuation.separator.key-value.renode-repl" },
+        "3": { "name": "support.class.renode-repl" }
+      }
+    },
+    "connection": {
+      "comment": "IRQ/GPIO wiring. Shapes: `IRQ -> nvic@36`, `-> nvic@27` (default output), `[0-4] -> nvic@[6-10]`, `src -> dst#1@2` (local index), `src -> none` (cancel).",
+      "patterns": [
+        {
+          "match": "(->)\\s*(none)\\b",
+          "captures": {
+            "1": { "name": "keyword.operator.connection.renode-repl" },
+            "2": { "name": "constant.language.renode-repl" }
+          }
+        },
+        {
+          "comment": "A GPIO PIN NUMBER as the source: `1 -> status_led@0`. Scoped numeric, not as a signal name.",
+          "match": "^([ \\t]*)([0-9]+)[ \\t]*(->)[ \\t]*([A-Za-z_][A-Za-z0-9_]*)(?:(#)([0-9]+))?[ \\t]*(@)[ \\t]*(\\[[^\\]]*\\]|[0-9]+)",
+          "captures": {
+            "2": { "name": "constant.numeric.renode-repl" },
+            "3": { "name": "keyword.operator.connection.renode-repl" },
+            "4": { "name": "variable.other.object.renode-repl" },
+            "5": { "name": "punctuation.separator.renode-repl" },
+            "6": { "name": "constant.numeric.renode-repl" },
+            "7": { "name": "keyword.operator.registration.renode-repl" },
+            "8": { "name": "constant.numeric.renode-repl" }
+          }
+        },
+        {
+          "match": "(\\[[^\\]]*\\]|[A-Za-z_][A-Za-z0-9_]*)?[ \\t]*(->)[ \\t]*([A-Za-z_][A-Za-z0-9_]*)(?:(#)([0-9]+))?[ \\t]*(@)[ \\t]*(\\[[^\\]]*\\]|[0-9]+)",
+          "captures": {
+            "1": { "name": "variable.other.member.renode-repl" },
+            "2": { "name": "keyword.operator.connection.renode-repl" },
+            "3": { "name": "variable.other.object.renode-repl" },
+            "4": { "name": "punctuation.separator.renode-repl" },
+            "5": { "name": "constant.numeric.renode-repl" },
+            "6": { "name": "keyword.operator.registration.renode-repl" },
+            "7": { "name": "constant.numeric.renode-repl" }
+          }
+        },
+        {
+          "comment": "A further destination after `|`, e.g. `IRQ -> a@1 | b@2`.",
+          "match": "(\\|)[ \\t]*([A-Za-z_][A-Za-z0-9_]*)[ \\t]*(@)[ \\t]*(\\[[^\\]]*\\]|[0-9]+)",
+          "captures": {
+            "1": { "name": "keyword.operator.connection.renode-repl" },
+            "2": { "name": "variable.other.object.renode-repl" },
+            "3": { "name": "keyword.operator.registration.renode-repl" },
+            "4": { "name": "constant.numeric.renode-repl" }
+          }
+        }
+      ]
+    },
+    "property": {
+      "comment": "An indented `key: value` attribute (constructor argument or property).",
+      "match": "^[ \\t]+([A-Za-z_][A-Za-z0-9_]*)\\s*(:)",
+      "captures": {
+        "1": { "name": "variable.other.property.renode-repl" },
+        "2": { "name": "punctuation.separator.key-value.renode-repl" }
+      }
+    },
+    "registration": {
+      "comment": "`@ parent point`, `@ { p1 a; p2 b }` for several registration points, `@ none` to cancel, optionally `as \"alias\"`.",
+      "patterns": [
+        {
+          "match": "(@)\\s*(none)\\b",
+          "captures": {
+            "1": { "name": "keyword.operator.registration.renode-repl" },
+            "2": { "name": "constant.language.renode-repl" }
+          }
+        },
+        {
+          "match": "(@)[ \\t]*([A-Za-z_][A-Za-z0-9_]*)?",
+          "captures": {
+            "1": { "name": "keyword.operator.registration.renode-repl" },
+            "2": { "name": "variable.other.object.renode-repl" }
+          }
+        }
+      ]
+    },
+    "values": {
+      "patterns": [
+        { "include": "#strings" },
+        { "include": "#keywords" },
+        { "include": "#numbers" },
+        { "include": "#enumValue" }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "match": "\\b(true|false)\\b",
+          "name": "constant.language.boolean.renode-repl"
+        },
+        {
+          "comment": "`none` cancels an inherited value; `empty` sets the type default.",
+          "match": "\\b(none|empty)\\b",
+          "name": "constant.language.renode-repl"
+        },
+        {
+          "match": "\\b(new|as|local)\\b",
+          "name": "keyword.other.renode-repl"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.triple.renode-repl",
+          "begin": "'''",
+          "end": "'''"
+        },
+        {
+          "name": "string.quoted.double.renode-repl",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.renode-repl",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "numbers": {
+      "comment": "Decimal or 0x hex, optionally signed — `+0x400` is the size form of a `<begin, +size>` range.",
+      "match": "[+-]?\\b(?:0[xX][0-9a-fA-F]+|[0-9]+)\\b",
+      "name": "constant.numeric.renode-repl"
+    },
+    "enumValue": {
+      "comment": "A dotted CamelCase value, e.g. `series: STM32Series.F0`.",
+      "match": "\\b[A-Z][A-Za-z0-9_]*(?:\\.[A-Za-z0-9_]+)+\\b",
+      "name": "support.constant.renode-repl"
+    }
+  }
+}

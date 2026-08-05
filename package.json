@@ -1,0 +1,85 @@
+{
+  "name": "renode",
+  "displayName": "Renode (.repl / .resc)",
+  "description": "Language support for Renode's platform description (.repl) and Monitor script (.resc) formats: syntax highlighting, hovers, document links and go-to-definition. Built to the Renode language references, not to any single project.",
+  "version": "0.1.0",
+  "publisher": "farmblox",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/farmblox/vscode-renode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/farmblox/vscode-renode/issues"
+  },
+  "homepage": "https://github.com/farmblox/vscode-renode#readme",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": [
+    "renode",
+    "repl",
+    "resc",
+    "emulation",
+    "embedded"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onLanguage:renode-repl",
+    "onLanguage:renode-resc"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "renode-repl",
+        "aliases": [
+          "Renode platform description",
+          "repl"
+        ],
+        "extensions": [
+          ".repl"
+        ],
+        "configuration": "./language-configuration-repl.json"
+      },
+      {
+        "id": "renode-resc",
+        "aliases": [
+          "Renode script",
+          "resc"
+        ],
+        "extensions": [
+          ".resc"
+        ],
+        "configuration": "./language-configuration-resc.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "renode-repl",
+        "scopeName": "source.renode-repl",
+        "path": "./syntaxes/renode-repl.tmLanguage.json"
+      },
+      {
+        "language": "renode-resc",
+        "scopeName": "source.renode-resc",
+        "path": "./syntaxes/renode-resc.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.python": "python"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "test": "node check-hovers.mjs && node check-grammars.mjs",
+    "test:hovers": "node check-hovers.mjs",
+    "test:grammars": "node check-grammars.mjs"
+  },
+  "devDependencies": {
+    "vscode-oniguruma": "^2.0.1",
+    "vscode-textmate": "^9.0.0"
+  },
+  "author": "Farmblox Inc."
+}

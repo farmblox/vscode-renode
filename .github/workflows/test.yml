@@ -1,0 +1,39 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # No build step: the extension is plain CommonJS JavaScript plus JSON grammars.
+      - name: Validate manifest and grammars parse
+        run: |
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            for (const g of pkg.contributes.grammars) JSON.parse(fs.readFileSync(g.path, 'utf8'));
+            for (const l of pkg.contributes.languages) JSON.parse(fs.readFileSync(l.configuration, 'utf8'));
+            console.log('manifest + ' + pkg.contributes.grammars.length + ' grammars + '
+                        + pkg.contributes.languages.length + ' language configs parse');
+          "
+          node --check extension.js
+          node -e "require('./lib.js')"
+
+      # Resolution logic: no dependencies at all.
+      - name: Hover / link / definition logic
+        run: node check-hovers.mjs
+
+      # Grammars, through the same TextMate engine VS Code uses.
+      - name: Grammars
+        run: |
+          npm install --no-save vscode-textmate vscode-oniguruma
+          node check-grammars.mjs

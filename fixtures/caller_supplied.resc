@@ -1,0 +1,8 @@
+:name: caller_supplied
+:description: FIXTURE — the "caller supplies the platform" pattern: this script sets a
+: variable and includes a script that consumes it. Renode variables are global and an
+: include is textual, so the value reaches the other file.
+
+$global.board ?= $ORIGIN/general.repl
+
+include $ORIGIN/common_loader.resc

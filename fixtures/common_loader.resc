@@ -1,0 +1,6 @@
+:name: common_loader
+:description: FIXTURE — a shared bring-up script that loads a platform it does NOT choose.
+: `$global.board` is set by whichever script includes this one, so viewed on its own the
+: path here is genuinely unresolvable — which is the case worth handling explicitly.
+
+machine LoadPlatformDescription $global.board

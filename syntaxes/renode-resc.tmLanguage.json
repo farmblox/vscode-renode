@@ -1,0 +1,194 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Renode script",
+  "scopeName": "source.renode-resc",
+  "comment": "Grammar for Renode Monitor scripts. Follows https://renode.readthedocs.io/en/latest/basic/monitor-syntax.html — note that `emulation`, `machine`, `sysbus` and `connector` are OBJECTS in the Monitor's tree rather than commands, which is why they are scoped as classes and the CamelCase token after them as a method. Also note `:` is a comment prefix, which is what makes the `:name:` / `:description:` metadata (and their bare-colon continuation lines) comments by construction.",
+  "patterns": [
+    { "include": "#metadata" },
+    { "include": "#comments" },
+    { "include": "#macroContinuation" },
+    { "include": "#multilineString" },
+    { "include": "#pythonInline" },
+    { "include": "#strings" },
+    { "include": "#backtick" },
+    { "include": "#pathLiteral" },
+    { "include": "#variables" },
+    { "include": "#assignment" },
+    { "include": "#commandAliases" },
+    { "include": "#commands" },
+    { "include": "#builtinObjects" },
+    { "include": "#objectTarget" },
+    { "include": "#numbers" },
+    { "include": "#keywords" },
+    { "include": "#methodCall" },
+    { "include": "#memberAccess" }
+  ],
+  "repository": {
+    "metadata": {
+      "comment": "Script metadata. These are ordinary `:` comments with a convention, and Renode reads them to describe the script.",
+      "match": "^(:(?:name|description):)(.*)$",
+      "captures": {
+        "1": { "name": "keyword.other.directive.renode-resc" },
+        "2": { "name": "comment.line.documentation.renode-resc" }
+      }
+    },
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.renode-resc",
+          "match": "#.*$"
+        },
+        {
+          "comment": "A bare `:` also starts a comment — used to continue a :description: across lines.",
+          "name": "comment.line.documentation.renode-resc",
+          "match": "^:.*$"
+        }
+      ]
+    },
+    "macroContinuation": {
+      "comment": "Lines of a multi-line `macro` body are introduced with `>`.",
+      "match": "^\\s*(>)",
+      "captures": {
+        "1": { "name": "punctuation.definition.macro.renode-resc" }
+      }
+    },
+    "multilineString": {
+      "comment": "Triple-quoted string, most often a `macro` body. Embedded `python \"...\"` inside still highlights.",
+      "name": "string.quoted.triple.renode-resc",
+      "begin": "\"\"\"",
+      "end": "\"\"\"",
+      "patterns": [
+        { "include": "#pythonInline" }
+      ]
+    },
+    "pythonInline": {
+      "comment": "`python \"...\"` runs a Python statement in the Monitor's interpreter — highlight the argument as Python.",
+      "begin": "\\b(python)[ \\t]+(\")",
+      "beginCaptures": {
+        "1": { "name": "keyword.other.command.renode-resc" },
+        "2": { "name": "punctuation.definition.string.begin.renode-resc" }
+      },
+      "end": "\"",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.renode-resc" }
+      },
+      "contentName": "meta.embedded.block.python",
+      "patterns": [
+        { "include": "source.python" }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.renode-resc",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.renode-resc",
+          "match": "\\\\."
+        },
+        { "include": "#backtick" }
+      ]
+    },
+    "backtick": {
+      "comment": "Command substitution: the inner command runs first and its result is spliced in.",
+      "begin": "`",
+      "end": "`",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.substitution.begin.renode-resc" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.substitution.end.renode-resc" }
+      },
+      "contentName": "meta.embedded.command-substitution.renode-resc",
+      "patterns": [
+        { "include": "#commands" },
+        { "include": "#builtinObjects" },
+        { "include": "#methodCall" },
+        { "include": "#variables" }
+      ]
+    },
+    "pathLiteral": {
+      "comment": "`@path` is Renode's path literal (it enables completion). $ORIGIN/$CWD-relative paths deliberately take no `@`.",
+      "match": "(?<![\\w$])(@)([^\\s\"]+)",
+      "captures": {
+        "1": { "name": "punctuation.definition.path.renode-resc" },
+        "2": { "name": "string.unquoted.path.renode-resc" }
+      }
+    },
+    "variables": {
+      "patterns": [
+        {
+          "comment": "$ORIGIN = the including script's directory (scripts only); $CWD = the working directory (Monitor only).",
+          "match": "\\$(?:ORIGIN|CWD)\\b",
+          "name": "variable.language.renode-resc"
+        },
+        {
+          "comment": "An explicitly scoped variable. Unqualified names bind to the SELECTED MACHINE's scope, which is why cross-machine scripts use $global.",
+          "match": "(\\$)(global|machine_[0-9]+)(\\.)([A-Za-z_][A-Za-z0-9_]*)",
+          "captures": {
+            "1": { "name": "punctuation.definition.variable.renode-resc" },
+            "2": { "name": "storage.modifier.renode-resc" },
+            "3": { "name": "punctuation.accessor.renode-resc" },
+            "4": { "name": "variable.other.renode-resc" }
+          }
+        },
+        {
+          "match": "(\\$)([A-Za-z_][A-Za-z0-9_.]*)",
+          "captures": {
+            "1": { "name": "punctuation.definition.variable.renode-resc" },
+            "2": { "name": "variable.other.renode-resc" }
+          }
+        }
+      ]
+    },
+    "assignment": {
+      "comment": "`?=` assigns only if unset (how a script declares an overridable default); `=` always assigns.",
+      "match": "\\?=|=",
+      "name": "keyword.operator.assignment.renode-resc"
+    },
+    "commandAliases": {
+      "comment": "Single-letter aliases (i=include, s=start, p=pause, q=quit) — only at the start of a line, so they cannot swallow a stray letter elsewhere.",
+      "match": "^[ \\t]*(i|s|p|q)(?=[ \\t]|$)",
+      "captures": {
+        "1": { "name": "keyword.other.command.renode-resc" }
+      }
+    },
+    "commands": {
+      "comment": "Built-in Monitor commands (class list from renode-infrastructure src/UserInterface/Commands).",
+      "match": "(?<![\\w.$-])(?:include|using|start|pause|quit|help|version|mach|macro|runMacro|echo|python|setAndRevertAfter|set|unset|alias|allowPrivates|analyzers|autoSave|commandFromHistory|createPlatform|currentTime|displayImage|lastLog|logFile|logLevel|logNetwork|log|numbersMode|path|peripherals|require|resd|reverseExecMode|showBackendAnalyzer|showAnalyzer|string|tags|verboseMode|watch|next|EnsureTypeIsLoaded)(?![\\w.-])",
+      "name": "keyword.other.command.renode-resc"
+    },
+    "builtinObjects": {
+      "comment": "Roots of the Monitor's object tree, not commands — `emulation CreateX`, `sysbus LoadBinary` are method calls on these.",
+      "match": "(?<![\\w.$-])(?:emulation|machine|sysbus|connector)(?![\\w-])",
+      "name": "support.class.renode-resc"
+    },
+    "objectTarget": {
+      "comment": "A user-named object being addressed, i.e. a lowercase first token followed by a CamelCase method: `medium SetPosition ...`, `term WriteChar ...`.",
+      "match": "^[ \\t]*([a-z_][A-Za-z0-9_.]*)(?=[ \\t]+[A-Z])",
+      "captures": {
+        "1": { "name": "variable.other.object.renode-resc" }
+      }
+    },
+    "numbers": {
+      "match": "[+-]?\\b(?:0[xX][0-9a-fA-F]+|[0-9]+\\.[0-9]+|[0-9]+)\\b",
+      "name": "constant.numeric.renode-resc"
+    },
+    "keywords": {
+      "match": "\\b(?:true|false)\\b",
+      "name": "constant.language.boolean.renode-resc"
+    },
+    "methodCall": {
+      "comment": "A CamelCase token is a method or property on the object to its left.",
+      "match": "(?<![\\w.$-])[A-Z][A-Za-z0-9_]*(?![\\w-])",
+      "name": "entity.name.function.renode-resc"
+    },
+    "memberAccess": {
+      "match": "(\\.)([A-Za-z_][A-Za-z0-9_]*)",
+      "captures": {
+        "1": { "name": "punctuation.accessor.renode-resc" },
+        "2": { "name": "variable.other.member.renode-resc" }
+      }
+    }
+  }
+}

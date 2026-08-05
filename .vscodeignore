@@ -1,0 +1,12 @@
+# Everything needed at runtime is the grammars, the language configs, lib.js and
+# extension.js. Tests, fixtures and tooling are for contributors, not for the package.
+.github/**
+fixtures/**
+check-grammars.mjs
+check-hovers.mjs
+install.sh
+node_modules/**
+package-lock.json
+.gitignore
+.vscodeignore
+CONTRIBUTING.md

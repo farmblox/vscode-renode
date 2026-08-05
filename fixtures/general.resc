@@ -1,0 +1,55 @@
+:name: general
+:description: FIXTURE — a generic Renode script, written to exercise Monitor SYNTAX rather
+: than any particular project. Every construct here is from Renode's own documentation.
+: Test data for check-hovers.mjs / check-grammars.mjs; not loaded by any suite.
+
+$image ?= $ORIGIN/image.bin
+$port  ?= 3333
+$global.plat ?= $ORIGIN/general.repl
+set label "demo"
+
+path add $ORIGIN
+
+# Pull in another script — it creates a name used further down.
+include $ORIGIN/general_include.resc
+
+using sysbus
+
+mach create "board"
+machine LoadPlatformDescription $global.plat
+
+emulation CreateServerSocketTerminal $port "term"
+connector Connect sysbus.uart0 term
+
+include $ORIGIN/ExampleModel.cs
+emulation CreateExampleThing "thing"
+thing Poke 3
+
+emulation CreateLoraMedium "medium"
+
+# A method call on a user-created object, and one on a built-in.
+medium SetPosition sysbus.uart0 0 0 0
+sysbus WriteDoubleWord 0x20000000 0xDEADBEEF
+
+sysbus LoadBinary $image 0x08000000
+sysbus LoadSymbolsFrom $ORIGIN/general.repl
+
+# Output paths: these are WRITTEN when the script runs, so they need not exist yet.
+logFile $ORIGIN/general.log true
+sysbus.uart0 CreateFileBackend $ORIGIN/uart.log true
+
+logLevel 3 sysbus.uart0
+numbersMode Hexadecimal
+
+python "self.Machine['sysbus.cpu'].PC = 0x08000000"
+
+macro reset """
+    sysbus LoadBinary $image 0x08000000
+    python "cpu=self.Machine['sysbus.cpu']; cpu.PC=0x08000000"
+"""
+runMacro $reset
+
+echo "cpu sits at `cpu PC`"
+
+showAnalyzer sysbus.uart0
+start
