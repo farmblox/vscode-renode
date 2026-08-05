@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/farmblox/vscode-renode/raw/main/images/icon.png" width="112" alt="">
+  <img src="https://raw.githubusercontent.com/farmblox/vscode-renode/main/images/icon.png" width="112" alt="">
 </p>
 
 <h1 align="center">Renode for VS Code</h1>
@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/farmblox/vscode-renode/actions/workflows/test.yml"><img src="https://github.com/farmblox/vscode-renode/actions/workflows/test.yml/badge.svg" alt="test"></a>
+  <a href="https://github.com/farmblox/vscode-renode/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/farmblox/vscode-renode/test.yml?branch=main&amp;label=test" alt="test"></a>
   <a href="https://github.com/farmblox/vscode-renode/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license: MIT"></a>
 </p>
 
