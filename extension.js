@@ -314,7 +314,7 @@ const hoverProvider = {
         const info = lib.describeTarget(source);
         if (info.summary) md.appendMarkdown(`\n${info.summary}\n`);
       } else {
-        md.appendMarkdown("No model source in this repo — one of Renode's bundled models.");
+        md.appendMarkdown("No model source in the workspace; one of Renode's bundled models.");
       }
       return new vscode.Hover(md, new vscode.Range(
         position.line, type.startCol, position.line, type.endCol));

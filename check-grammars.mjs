@@ -1,15 +1,11 @@
-// Tokenize every .repl / .resc file in this repo with the SAME TextMate engine VS Code
-// uses, then assert scopes on representative constructs. This is a real grammar run, not a
-// preview — it is how the two bugs in the first draft were found (connection sources in
-// this repo are GPIO pin NUMBERS like `1 -> status_led@0`, which an identifier-only capture
-// missed; and `showAnalyzer` was absent from the command list).
+// Tokenize every .repl / .resc file in the checkout with the same TextMate engine VS Code
+// uses, and assert the scope assigned to representative constructs.
 //
-// OPTIONAL and standalone: nothing else here needs node, and CI does not run this. Use it
-// when you change a grammar.
-//
-//   cd dev/vscode-renode
 //   npm install --no-save vscode-textmate vscode-oniguruma
 //   node check-grammars.mjs
+//
+// Fixtures come first: they cover the documented syntax. The sweep over the remaining files
+// checks that nothing in the checkout fails to tokenize.
 //
 import * as fs from "fs";
 import * as path from "path";
@@ -149,12 +145,12 @@ expectScope(soc, "[0-4]", "variable.other.member", "irq range source");
 expectScope(soc, "[6-10]", "constant.numeric", "irq range dest");
 
 console.log("== .repl: synthesised forms");
-// The pin-number connection form, which is what this repo's board files actually use.
+// A pin number as the connection source.
 expectScope(
   await tokenize("source.renode-repl", "    1 -> status_led@0"),
   "1", "constant.numeric", "pin-number connection source"
 );
-// Forms the reference documents that this repo does not use yet.
+// Further forms from the platform-description reference.
 const extras = await tokenize("source.renode-repl", [
   'phy: Network.Phy @ ethernet 0 as "eth-phy"',
   "    irq -> gic#1@42 | cpu@3",

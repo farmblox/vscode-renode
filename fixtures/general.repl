@@ -14,7 +14,7 @@ button: Miscellaneous.Button @ sysbus
     -> gpio@0
     invert: true
 
-// Declared but deliberately registered NOWHERE.
+// Declared, but registered nowhere.
 spare: Miscellaneous.LED @ none
 
 // Re-open nodes declared above (here and in the SoC file) to override and to cancel.

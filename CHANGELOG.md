@@ -22,12 +22,13 @@ Initial release.
 - **Hovers** for paths (with the target's `:name:`/`:description:` or leading comment block),
   `$variables`, node declarations, Monitor commands, built-in objects, `.repl` format
   keywords, script-created names, and types.
-- **Member resolution parsed from C# model sources**, so custom peripherals are documented:
-  `.repl` attributes resolve to a public property *or a constructor parameter*, wiring names
-  to public `GPIO` fields, script method calls to methods on the receiver's class, and
-  `emulation Create…` to the `this Emulation` extension method that defines it.
+- **Member resolution from C# model sources**: `.repl` attributes resolve to a public
+  property or a constructor parameter, wiring names to public `GPIO` fields, script method
+  calls to methods on the receiver's class, and `emulation Create…` to the `this Emulation`
+  extension method that defines it.
 - **Go-to-definition** for all of the above.
-- Cross-file resolution that follows `using` and `include` chains, with each variable's
-  `$ORIGIN` expanded in the file that assigned it.
-- Two test suites: `check-grammars.mjs` (real TextMate engine) and `check-hovers.mjs`
-  (resolution logic), both asserting against the general fixtures in `fixtures/`.
+- Cross-file resolution following `using` and `include` chains, with each variable's
+  `$ORIGIN` expanded relative to the file that assigned it.
+- Two test suites: `check-grammars.mjs`, which tokenizes with the same TextMate engine VS
+  Code uses, and `check-hovers.mjs`, which exercises the resolution logic. Both run against
+  the fixtures in `fixtures/`.

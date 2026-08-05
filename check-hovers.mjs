@@ -1,12 +1,9 @@
-// Test the logic behind the hover / link / definition providers against this repo's REAL
-// files. lib.js imports no `vscode`, so this needs nothing but node — no extension host,
-// no VS Code download.
+// Test the resolution logic behind the hover, link and definition providers.
 //
-//   cd dev/vscode-renode && node check-hovers.mjs
+//   node check-hovers.mjs
 //
-// It tests lib.js, not extension.js: extension.js is a thin adapter over these results, so
-// what can silently be WRONG (path resolution, `using`-chain indexing, description
-// extraction) is what is covered here.
+// lib.js imports no `vscode`, so this runs under plain node with no extension host. It covers
+// lib.js rather than extension.js, which is a thin adapter over these results.
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
@@ -122,7 +119,7 @@ console.log("== variables");
   check(vars.size > 0, `parsed ${vars.size} assignment(s) from ${path.relative(REPO, platFile)}`);
   const defaulted = [...vars.values()].filter((v) => v.defaulted);
   check(defaulted.length > 0, "`?=` assignments are marked as overridable defaults");
-  // No-space form, which this repo uses in dev/monitor.resc (`$lane?=0`).
+  // The no-space form, `$lane?=0`.
   const tight = lib.parseVariables("$lane?=0");
   check(tight.get("lane") && tight.get("lane").value === "0" && tight.get("lane").defaulted,
     "`$lane?=0` parses with no spaces around the operator");
@@ -269,9 +266,8 @@ console.log("== comments are not references");
 
 
 // ── THE LANGUAGE CONTRACT: general Renode fixtures ──────────────────────────────
-// These assertions are about Renode's .repl/.resc languages, not about this repo. The
-// fixtures use constructs from the platform-description and Monitor references that no file
-// in this codebase happens to contain, so support cannot quietly narrow to local habits.
+// Assertions against the fixtures, which cover the platform-description and Monitor
+// references directly.
 console.log("== language contract (fixtures/)");
 {
   const FIX = path.join(HERE, "fixtures");

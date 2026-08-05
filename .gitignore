@@ -1,4 +1,3 @@
-# check-grammars.mjs pulls its two dev-only packages here with `npm install --no-save`.
-# Nothing else in this repo uses node, so none of this belongs in the tree.
+# Dev-only packages for check-grammars.mjs, pulled with `npm install --no-save`.
 node_modules/
 package-lock.json

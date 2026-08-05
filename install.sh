@@ -48,7 +48,7 @@ for dir in "${EXT_DIRS[@]}"; do
         continue
     fi
     # Only ever replace OUR OWN symlink: a real directory there is somebody else's
-    # extension (or a copy someone made deliberately) and is not ours to delete.
+    # extension, or a copy someone made on purpose, and is not ours to remove.
     if [ -L "$target" ]; then
         rm "$target"
     elif [ -e "$target" ]; then

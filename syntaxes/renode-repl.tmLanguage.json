@@ -2,16 +2,32 @@
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
   "name": "Renode platform description",
   "scopeName": "source.renode-repl",
-  "comment": "Grammar for Renode's platform description format. Follows the reference at https://renode.readthedocs.io/en/latest/advanced/platform_description_format.html rather than only what this repo happens to use, so constructs we do not use yet (init/preinit/reset blocks, `new` inline objects, `as` aliases, `none`/`empty`, list and dictionary values, `#index` local IRQs, `|` multi-destination) still highlight correctly.",
+  "comment": "Grammar for Renode's platform description format, following https://renode.readthedocs.io/en/latest/advanced/platform_description_format.html",
   "patterns": [
-    { "include": "#comments" },
-    { "include": "#using" },
-    { "include": "#blocks" },
-    { "include": "#declaration" },
-    { "include": "#connection" },
-    { "include": "#property" },
-    { "include": "#registration" },
-    { "include": "#values" }
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#using"
+    },
+    {
+      "include": "#blocks"
+    },
+    {
+      "include": "#declaration"
+    },
+    {
+      "include": "#connection"
+    },
+    {
+      "include": "#property"
+    },
+    {
+      "include": "#registration"
+    },
+    {
+      "include": "#values"
+    }
   ],
   "repository": {
     "comments": {
@@ -31,26 +47,42 @@
       "comment": "`using \"other.repl\"` pulls in a dependency; `using local` limits variable scope.",
       "match": "^\\s*(using)(\\s+local)?\\b",
       "captures": {
-        "1": { "name": "keyword.control.import.renode-repl" },
-        "2": { "name": "storage.modifier.renode-repl" }
+        "1": {
+          "name": "keyword.control.import.renode-repl"
+        },
+        "2": {
+          "name": "storage.modifier.renode-repl"
+        }
       }
     },
     "blocks": {
-      "comment": "init / preinit / reset hold MONITOR statements, not repl attributes — `add` appends instead of replacing.",
+      "comment": "init / preinit / reset hold MONITOR statements, not repl attributes \u2014 `add` appends instead of replacing.",
       "match": "^\\s*(preinit|init|reset)(\\s+add)?\\s*(:)",
       "captures": {
-        "1": { "name": "keyword.control.renode-repl" },
-        "2": { "name": "keyword.control.renode-repl" },
-        "3": { "name": "punctuation.separator.key-value.renode-repl" }
+        "1": {
+          "name": "keyword.control.renode-repl"
+        },
+        "2": {
+          "name": "keyword.control.renode-repl"
+        },
+        "3": {
+          "name": "punctuation.separator.key-value.renode-repl"
+        }
       }
     },
     "declaration": {
-      "comment": "A node declaration starts in column 0: `name: Namespace.Type @ parent`. The type is optional — a bare `gpioPortA:` re-opens an already-declared node to add wiring.",
+      "comment": "A node declaration starts in column 0: `name: Namespace.Type @ parent`. The type is optional \u2014 a bare `gpioPortA:` re-opens an already-declared node to add wiring.",
       "match": "^([A-Za-z_][A-Za-z0-9_]*)\\s*(:)[ \\t]*([A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)+)?",
       "captures": {
-        "1": { "name": "entity.name.type.renode-repl" },
-        "2": { "name": "punctuation.separator.key-value.renode-repl" },
-        "3": { "name": "support.class.renode-repl" }
+        "1": {
+          "name": "entity.name.type.renode-repl"
+        },
+        "2": {
+          "name": "punctuation.separator.key-value.renode-repl"
+        },
+        "3": {
+          "name": "support.class.renode-repl"
+        }
       }
     },
     "connection": {
@@ -59,43 +91,83 @@
         {
           "match": "(->)\\s*(none)\\b",
           "captures": {
-            "1": { "name": "keyword.operator.connection.renode-repl" },
-            "2": { "name": "constant.language.renode-repl" }
+            "1": {
+              "name": "keyword.operator.connection.renode-repl"
+            },
+            "2": {
+              "name": "constant.language.renode-repl"
+            }
           }
         },
         {
           "comment": "A GPIO PIN NUMBER as the source: `1 -> status_led@0`. Scoped numeric, not as a signal name.",
           "match": "^([ \\t]*)([0-9]+)[ \\t]*(->)[ \\t]*([A-Za-z_][A-Za-z0-9_]*)(?:(#)([0-9]+))?[ \\t]*(@)[ \\t]*(\\[[^\\]]*\\]|[0-9]+)",
           "captures": {
-            "2": { "name": "constant.numeric.renode-repl" },
-            "3": { "name": "keyword.operator.connection.renode-repl" },
-            "4": { "name": "variable.other.object.renode-repl" },
-            "5": { "name": "punctuation.separator.renode-repl" },
-            "6": { "name": "constant.numeric.renode-repl" },
-            "7": { "name": "keyword.operator.registration.renode-repl" },
-            "8": { "name": "constant.numeric.renode-repl" }
+            "2": {
+              "name": "constant.numeric.renode-repl"
+            },
+            "3": {
+              "name": "keyword.operator.connection.renode-repl"
+            },
+            "4": {
+              "name": "variable.other.object.renode-repl"
+            },
+            "5": {
+              "name": "punctuation.separator.renode-repl"
+            },
+            "6": {
+              "name": "constant.numeric.renode-repl"
+            },
+            "7": {
+              "name": "keyword.operator.registration.renode-repl"
+            },
+            "8": {
+              "name": "constant.numeric.renode-repl"
+            }
           }
         },
         {
           "match": "(\\[[^\\]]*\\]|[A-Za-z_][A-Za-z0-9_]*)?[ \\t]*(->)[ \\t]*([A-Za-z_][A-Za-z0-9_]*)(?:(#)([0-9]+))?[ \\t]*(@)[ \\t]*(\\[[^\\]]*\\]|[0-9]+)",
           "captures": {
-            "1": { "name": "variable.other.member.renode-repl" },
-            "2": { "name": "keyword.operator.connection.renode-repl" },
-            "3": { "name": "variable.other.object.renode-repl" },
-            "4": { "name": "punctuation.separator.renode-repl" },
-            "5": { "name": "constant.numeric.renode-repl" },
-            "6": { "name": "keyword.operator.registration.renode-repl" },
-            "7": { "name": "constant.numeric.renode-repl" }
+            "1": {
+              "name": "variable.other.member.renode-repl"
+            },
+            "2": {
+              "name": "keyword.operator.connection.renode-repl"
+            },
+            "3": {
+              "name": "variable.other.object.renode-repl"
+            },
+            "4": {
+              "name": "punctuation.separator.renode-repl"
+            },
+            "5": {
+              "name": "constant.numeric.renode-repl"
+            },
+            "6": {
+              "name": "keyword.operator.registration.renode-repl"
+            },
+            "7": {
+              "name": "constant.numeric.renode-repl"
+            }
           }
         },
         {
           "comment": "A further destination after `|`, e.g. `IRQ -> a@1 | b@2`.",
           "match": "(\\|)[ \\t]*([A-Za-z_][A-Za-z0-9_]*)[ \\t]*(@)[ \\t]*(\\[[^\\]]*\\]|[0-9]+)",
           "captures": {
-            "1": { "name": "keyword.operator.connection.renode-repl" },
-            "2": { "name": "variable.other.object.renode-repl" },
-            "3": { "name": "keyword.operator.registration.renode-repl" },
-            "4": { "name": "constant.numeric.renode-repl" }
+            "1": {
+              "name": "keyword.operator.connection.renode-repl"
+            },
+            "2": {
+              "name": "variable.other.object.renode-repl"
+            },
+            "3": {
+              "name": "keyword.operator.registration.renode-repl"
+            },
+            "4": {
+              "name": "constant.numeric.renode-repl"
+            }
           }
         }
       ]
@@ -104,8 +176,12 @@
       "comment": "An indented `key: value` attribute (constructor argument or property).",
       "match": "^[ \\t]+([A-Za-z_][A-Za-z0-9_]*)\\s*(:)",
       "captures": {
-        "1": { "name": "variable.other.property.renode-repl" },
-        "2": { "name": "punctuation.separator.key-value.renode-repl" }
+        "1": {
+          "name": "variable.other.property.renode-repl"
+        },
+        "2": {
+          "name": "punctuation.separator.key-value.renode-repl"
+        }
       }
     },
     "registration": {
@@ -114,25 +190,41 @@
         {
           "match": "(@)\\s*(none)\\b",
           "captures": {
-            "1": { "name": "keyword.operator.registration.renode-repl" },
-            "2": { "name": "constant.language.renode-repl" }
+            "1": {
+              "name": "keyword.operator.registration.renode-repl"
+            },
+            "2": {
+              "name": "constant.language.renode-repl"
+            }
           }
         },
         {
           "match": "(@)[ \\t]*([A-Za-z_][A-Za-z0-9_]*)?",
           "captures": {
-            "1": { "name": "keyword.operator.registration.renode-repl" },
-            "2": { "name": "variable.other.object.renode-repl" }
+            "1": {
+              "name": "keyword.operator.registration.renode-repl"
+            },
+            "2": {
+              "name": "variable.other.object.renode-repl"
+            }
           }
         }
       ]
     },
     "values": {
       "patterns": [
-        { "include": "#strings" },
-        { "include": "#keywords" },
-        { "include": "#numbers" },
-        { "include": "#enumValue" }
+        {
+          "include": "#strings"
+        },
+        {
+          "include": "#keywords"
+        },
+        {
+          "include": "#numbers"
+        },
+        {
+          "include": "#enumValue"
+        }
       ]
     },
     "keywords": {
@@ -173,7 +265,7 @@
       ]
     },
     "numbers": {
-      "comment": "Decimal or 0x hex, optionally signed — `+0x400` is the size form of a `<begin, +size>` range.",
+      "comment": "Decimal or 0x hex, optionally signed \u2014 `+0x400` is the size form of a `<begin, +size>` range.",
       "match": "[+-]?\\b(?:0[xX][0-9a-fA-F]+|[0-9]+)\\b",
       "name": "constant.numeric.renode-repl"
     },

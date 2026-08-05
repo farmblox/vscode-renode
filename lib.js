@@ -1,7 +1,7 @@
 // Pure logic behind the hover / link / go-to-definition providers.
 //
-// Deliberately free of any `vscode` import: everything here is string and filesystem work,
-// so it can be tested by plain node against this repo's real files (check-hovers.mjs).
+// Free of any `vscode` import: everything here is string and filesystem work, so it can be
+// tested under plain node (check-hovers.mjs).
 // extension.js is the thin adapter that turns these results into VS Code objects.
 "use strict";
 
@@ -335,9 +335,8 @@ function identifierAt(lineText, col) {
 
 // ── comments ───────────────────────────────────────────────────────────────────
 /**
- * Is this column inside a comment? Without this, hovering the word "gateway" in a
- * `#` comment or a `:description:` line pops a peripheral declaration — measured on
- * run.resc, where four of the hoverable spans were prose.
+ * Is this column inside a comment? A `#` comment or a `:description:` line that mentions a
+ * peripheral's name would otherwise resolve to that peripheral's declaration.
  */
 function isInComment(lineText, col, languageId) {
   if (languageId === "renode-repl") {
@@ -414,15 +413,14 @@ const REPL_KEYWORDS = {
   as: "Give a registration an alias: `@ sysbus 0x1000 as \"name\"`.",
 };
 const OBJECTS = {
-  emulation: "The emulation itself: machines, externals (`CreateBloxBusConnector`, `CreateLoraMedium`), the time source and global settings. An object, not a command.",
+  emulation: "The emulation itself: machines, externals created with `emulation Create…`, the time source and global settings. An object rather than a command.",
   machine: "The SELECTED machine — `machine LoadPlatformDescription <repl>` gives it its hardware.",
   sysbus: "The selected machine's system bus, and the root of its peripheral tree: `sysbus.lpuart1`. Also `LoadBinary` / `LoadELF` / `ReadDoubleWord`.",
   connector: "Wires an emulation element to something else — a UART to a terminal, a radio to a medium: `connector Connect sysbus.gateway lora`.",
 };
 
-// Methods and properties on Renode's built-in objects. Only ones whose behaviour is
-// documented — anything else is described by its RECEIVER plus the signature parsed out of
-// the model's own source. Guessing what a member does would be worse than silence.
+// Methods and properties on Renode's built-in objects. A member outside this table is
+// described by its receiver plus the signature parsed out of the model's own source.
 const MEMBERS = {
   Connect: "Wire two emulation elements together: `connector Connect <element> <target>`.",
   Disconnect: "Undo a `Connect`.",
@@ -442,7 +440,7 @@ const MEMBERS = {
   Step: "Execute a number of instructions, then pause.",
   Tag: "Name an address range so accesses to it are logged instead of hitting nothing.",
   ClearTag: "Remove a tag set with `Tag`.",
-  SilenceRange: "Stop logging accesses to a range — for a region deliberately left unmodelled.",
+  SilenceRange: "Stop logging accesses to a range, for a region left unmodelled.",
   CreateFileBackend: "Mirror this element's output to a file. A trailing `true` appends rather than truncates.",
   WriteByte: "Write one byte over the bus.",
   WriteWord: "Write a 16-bit word over the bus.",
@@ -462,7 +460,7 @@ const MEMBERS = {
   Load: "Restore an emulation from a snapshot.",
 };
 
-/** A built-in member's description, if Renode documents one. Deliberately partial. */
+/** A built-in member's description, where one is documented. */
 function describeMember(name) {
   return Object.prototype.hasOwnProperty.call(MEMBERS, name) ? MEMBERS[name] : null;
 }
@@ -556,9 +554,9 @@ function findConstructorParameter(lines, name) {
     const m = /^\s*public\s+([A-Za-z_][A-Za-z0-9_]*)\s*\(/.exec(lines[i]);
     if (!m) continue;
     // A parameter list can run for many lines, and real ones carry `//` comments INSIDE it
-    // (measured: a clock model whose ctor spans 17 lines with two comment lines among the
-    // parameters). Strip line comments before counting parens, and let the depth scan decide
-    // where the list ends rather than a fixed line budget.
+    // A clock model's constructor can span many lines with comments among the parameters.
+    // Strip line comments before counting parens, and let the depth scan find the end of the
+    // list rather than a fixed line budget.
     const joined = lines.slice(i, i + 120)
       .map((l) => l.replace(/\/\/.*$/, ""))
       .join("\n");
