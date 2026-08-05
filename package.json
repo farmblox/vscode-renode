@@ -1,7 +1,7 @@
 {
   "name": "renode",
   "displayName": "Renode (.repl / .resc)",
-  "description": "Language support for Renode's platform description (.repl) and Monitor script (.resc) formats: syntax highlighting, hovers, document links and go-to-definition. Built to the Renode language references, not to any single project.",
+  "description": "Language support for Renode platform descriptions (.repl) and Monitor scripts (.resc): syntax highlighting, hovers, document links and go-to-definition.",
   "version": "0.1.0",
   "publisher": "farmblox",
   "license": "MIT",
