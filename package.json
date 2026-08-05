@@ -1,16 +1,12 @@
 {
   "name": "renode",
-  "displayName": "Renode (.repl / .resc)",
+  "displayName": "Renode",
   "description": "Language support for Renode platform descriptions (.repl) and Monitor scripts (.resc): syntax highlighting, hovers, document links and go-to-definition.",
   "version": "0.1.0",
   "publisher": "farmblox",
   "license": "MIT",
   "author": "Farmblox Inc.",
   "icon": "images/icon.png",
-  "galleryBanner": {
-    "color": "#16202B",
-    "theme": "dark"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/farmblox/vscode-renode.git"
