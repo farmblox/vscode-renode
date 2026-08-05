@@ -1,10 +1,19 @@
-# <img src="images/icon.png" width="28" alt=""> Renode for VS Code
+<p align="center">
+  <img src="https://github.com/farmblox/vscode-renode/raw/main/images/icon.png" width="112" alt="">
+</p>
 
-Syntax highlighting, hovers, document links and go-to-definition for [Renode](https://renode.io)
-platform descriptions (`.repl`) and Monitor scripts (`.resc`).
+<h1 align="center">Renode for VS Code</h1>
 
-[![test](https://github.com/farmblox/vscode-renode/actions/workflows/test.yml/badge.svg)](https://github.com/farmblox/vscode-renode/actions/workflows/test.yml)
-[![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+<p align="center">
+  Syntax highlighting, hovers, document links and go-to-definition for
+  <a href="https://renode.io">Renode</a> platform descriptions (<code>.repl</code>)
+  and Monitor scripts (<code>.resc</code>).
+</p>
+
+<p align="center">
+  <a href="https://github.com/farmblox/vscode-renode/actions/workflows/test.yml"><img src="https://github.com/farmblox/vscode-renode/actions/workflows/test.yml/badge.svg" alt="test"></a>
+  <a href="https://github.com/farmblox/vscode-renode/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="license: MIT"></a>
+</p>
 
 ## Features
 
