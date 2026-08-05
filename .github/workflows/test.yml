@@ -22,8 +22,9 @@ jobs:
             const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
             for (const g of pkg.contributes.grammars) JSON.parse(fs.readFileSync(g.path, 'utf8'));
             for (const l of pkg.contributes.languages) JSON.parse(fs.readFileSync(l.configuration, 'utf8'));
+            if (pkg.icon && !fs.existsSync(pkg.icon)) throw new Error('missing icon: ' + pkg.icon);
             console.log('manifest + ' + pkg.contributes.grammars.length + ' grammars + '
-                        + pkg.contributes.languages.length + ' language configs parse');
+                        + pkg.contributes.languages.length + ' language configs + icon');
           "
           node --check extension.js
           node -e "require('./lib.js')"

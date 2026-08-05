@@ -1,3 +1,5 @@
+<img src="images/icon.png" alt="" width="96" align="right">
+
 # Renode for VS Code
 
 Syntax highlighting, hovers, document links and go-to-definition for [Renode](https://renode.io)

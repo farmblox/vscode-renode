@@ -5,6 +5,12 @@
   "version": "0.1.0",
   "publisher": "farmblox",
   "license": "MIT",
+  "author": "Farmblox Inc.",
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#16202B",
+    "theme": "dark"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/farmblox/vscode-renode.git"
@@ -80,6 +86,5 @@
   "devDependencies": {
     "vscode-oniguruma": "^2.0.1",
     "vscode-textmate": "^9.0.0"
-  },
-  "author": "Farmblox Inc."
+  }
 }
