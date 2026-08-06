@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/farmblox/vscode-renode/main/images/icon.png" width="112" alt="">
-</p>
-
 <h1 align="center">Renode for VS Code</h1>
 
 <p align="center">

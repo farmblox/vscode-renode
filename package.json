@@ -5,7 +5,6 @@
   "version": "0.1.0",
   "publisher": "farmblox",
   "license": "MIT",
-  "icon": "images/icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/farmblox/vscode-renode.git"
