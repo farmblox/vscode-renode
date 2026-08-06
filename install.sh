@@ -14,7 +14,7 @@
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-NAME="farmblox.renode"
+NAME="farmblox.renode-language"
 EXT_DIRS=(
     "$HOME/.vscode/extensions"
     "$HOME/.vscode-insiders/extensions"

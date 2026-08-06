@@ -1,11 +1,10 @@
 {
-  "name": "renode",
-  "displayName": "Renode",
+  "name": "renode-language",
+  "displayName": "Renode Language Support",
   "description": "Language support for Renode platform descriptions (.repl) and Monitor scripts (.resc): syntax highlighting, hovers, document links and go-to-definition.",
   "version": "0.1.0",
   "publisher": "farmblox",
   "license": "MIT",
-  "author": "Farmblox Inc.",
   "icon": "images/icon.png",
   "repository": {
     "type": "git",
@@ -14,7 +13,7 @@
   "bugs": {
     "url": "https://github.com/farmblox/vscode-renode/issues"
   },
-  "homepage": "https://github.com/farmblox/vscode-renode#readme",
+  "homepage": "https://github.com/farmblox/vscode-renode",
   "engines": {
     "vscode": "^1.75.0"
   },
@@ -73,14 +72,5 @@
         }
       }
     ]
-  },
-  "scripts": {
-    "test": "node check-hovers.mjs && node check-grammars.mjs",
-    "test:hovers": "node check-hovers.mjs",
-    "test:grammars": "node check-grammars.mjs"
-  },
-  "devDependencies": {
-    "vscode-oniguruma": "^2.0.1",
-    "vscode-textmate": "^9.0.0"
   }
 }

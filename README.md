@@ -141,7 +141,7 @@ To build a `.vsix` instead:
 
 ```sh
 npx @vscode/vsce package
-code --install-extension renode-0.1.0.vsix
+code --install-extension renode-language-0.1.0.vsix
 ```
 
 ## Recommended setting
@@ -187,9 +187,9 @@ leads when reached from a script that sets it.
 ## Development
 
 ```sh
-npm test                 # both suites
-npm run test:hovers      # resolution logic; no dependencies
-npm run test:grammars    # grammars, via vscode-textmate and vscode-oniguruma
+node check-hovers.mjs                                   # resolution logic; no dependencies
+npm install --no-save vscode-textmate vscode-oniguruma
+node check-grammars.mjs                                 # grammars
 ```
 
 `lib.js` holds the resolution logic and imports no `vscode`, which is what lets
@@ -207,7 +207,7 @@ to a file that exists, is marked as an output, or is supplied by a caller.
 
 Issues and pull requests are welcome.
 
-Run `npm test` before opening a pull request; CI runs the same suites. New syntax support
+Run both checks before opening a pull request; CI runs the same ones. New syntax support
 wants a fixture in `fixtures/` and an assertion alongside it. Fixtures are selected by content
 rather than by path, so moving a file will not turn a test into a no-op.
 
