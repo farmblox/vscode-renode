@@ -10,4 +10,4 @@ package-lock.json
 .gitignore
 .vscodeignore
 CONTRIBUTING.md
-images/icon.svg
+images/**
